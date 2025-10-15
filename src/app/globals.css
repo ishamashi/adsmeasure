@@ -1,26 +1,138 @@
+/* src/app/globals.css */
+
+/* Tailwind v4 - CSS-first configuration */
 @import "tailwindcss";
 
+/* Theme customization untuk adsMeasure brand */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Brand Colors */
+  --primary: #2563eb;
+  --secondary: #0ea5e9;
+  --accent: #8b5cf6;
+  --dark: #0f172a;
+  
+  /* Extended color palette */
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #3b82f6;
+  
+  /* Typography */
+  --font-family-sans: 'Inter', system-ui, sans-serif;
+  --font-family-display: 'Cal Sans', 'Inter', system-ui, sans-serif;
+  
+  /* Spacing scale untuk dashboard */
+  --spacing-18: 4.5rem;
+  --spacing-22: 5.5rem;
+  
+  /* Border radius */
+  --radius-card: 1rem;
+  --radius-button: 0.5rem;
+  
+  /* Shadows */
+  --shadow-glow: 0 0 20px rgba(37, 99, 235, 0.3);
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  
+  /* Breakpoints - Tailwind v4 custom */
+  --breakpoint-3xl: 1920px;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Kaitkan warna */
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-dark: var(--dark);
+
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
+
+  /* Kaitkan tipografi */
+  --font-sans: var(--font-family-sans);
+  --font-display: var(--font-family-display);
+
+  /* Kaitkan spacing */
+  --spacing-18: var(--spacing-18);
+  --spacing-22: var(--spacing-22);
+
+  /* Kaitkan border radius */
+  --radius-card: var(--radius-card);
+  --radius-button: var(--radius-button);
+
+  /* Kaitkan shadows */
+  --shadow-glow: var(--shadow-glow);
+  --shadow-card: var(--shadow-card);
+
+  /* Kaitkan breakpoints */
+  --breakpoint-3xl: var(--breakpoint-3xl);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Custom utilities */
+@utility gradient-brand {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
 }
 
+@utility text-gradient {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Global styles */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  @apply bg-white text-gray-900 font-sans;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  @apply text-secondary hover:underline;
+  text-decoration: none;
+}
+button {
+  @apply bg-primary text-white font-semibold py-2 px-4 rounded-button shadow-card hover:bg-blue-700;
+  transition: background-color 0.3s ease;
+}
+button:disabled {
+  @apply bg-gray-400 cursor-not-allowed;
+}
+h1, h2, h3, h4, h5, h6 {
+  @apply font-display;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+p {
+  margin-bottom: 1rem;
+}
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400;
 }
