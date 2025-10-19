@@ -272,7 +272,7 @@ export default function AdsMeasureLanding() {
         <div className="max-w-4xl mx-auto text-center">
           <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-blue-500/30 rounded-2xl p-12">
             <h2 className="text-4xl font-bold mb-4">Siap Mengukur Impact Iklan Anda?</h2>
-            <p className="text-xl text-slate-400 mb-8">Mulai trial gratis 14 hari. Tanpa kartu kredit.</p>
+            <p className="text-xl text-slate-400 mb-8">Mulai trial gratis 7 hari.</p>
             <div className="flex flex-wrap justify-center gap-4">
               <button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-lg font-semibold hover:shadow-xl hover:shadow-blue-500/30 transition">Start Free Trial</button>
               <button className="px-8 py-4 bg-white text-slate-900 rounded-lg font-semibold hover:bg-slate-100 transition">Schedule Demo</button>

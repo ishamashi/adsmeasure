@@ -15,16 +15,16 @@ export function Navbar() {
         </Link>
 
         <div className="hidden md:flex items-center gap-8">
-          <Link href="#solutions" className="text-slate-300 hover:text-white transition">
+          <Link href="solutions" className="text-slate-300 hover:text-white transition">
             Solutions
           </Link>
-          <Link href="#features" className="text-slate-300 hover:text-white transition">
+          <Link href="features" className="text-slate-300 hover:text-white transition">
             Features
           </Link>
-          <Link href="#pricing" className="text-slate-300 hover:text-white transition">
+          <Link href="pricing" className="text-slate-300 hover:text-white transition">
             Pricing
           </Link>
-          <Link href="#contact" className="text-slate-300 hover:text-white transition">
+          <Link href="contact" className="text-slate-300 hover:text-white transition">
             Contact
           </Link>
         </div>

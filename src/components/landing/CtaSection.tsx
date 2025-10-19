@@ -7,7 +7,7 @@ export function CtaSection() {
       <div className="max-w-4xl mx-auto text-center">
         <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-blue-500/30 rounded-2xl p-12">
           <h2 className="text-4xl font-bold mb-4">Siap Mengukur Impact Iklan Anda?</h2>
-          <p className="text-xl text-slate-400 mb-8">Mulai trial gratis 14 hari. Tanpa kartu kredit.</p>
+          <p className="text-xl text-slate-400 mb-8">Mulai trial gratis 7 hari.</p>
           <div className="flex flex-wrap justify-center gap-4">
             <Button size="lg" className="bg-gradient-brand font-semibold hover:shadow-glow">
               Start Free Trial
