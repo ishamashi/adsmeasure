@@ -7,7 +7,7 @@ export default function DashboardPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold font-display text-dark">Welcome Back, Admin!</h1>
-        <p className="text-gray-500">Here's your performance summary for today.</p>
+        <p className="text-gray-500">Here&apos;s your performance summary for today.</p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

@@ -60,7 +60,7 @@ export function HeroSection() {
                 {/* Mini Chart */}
                 <div className="bg-slate-800 rounded-lg p-4">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-sm font-semibold">Today's Traffic</span>
+                    <span className="text-sm font-semibold">Today&apos;s Traffic</span>
                     <span className="text-green-400 text-sm flex items-center gap-1">
                       <TrendingUp className="w-4 h-4" />
                       +24%
