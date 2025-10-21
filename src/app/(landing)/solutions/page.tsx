@@ -4,6 +4,13 @@ import { SolutionDetail } from "@/components/landing/SolutionDetail";
 import { CtaSection } from "@/components/landing/CtaSection";
 import { solutions } from "@/lib/solutionData"; // Impor data kita
 
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Our Solutions",
+  description: "Explore UrbanCounting's solutions: from precise traffic counting and crowd analytics to in-depth ROI measurement for your OOH campaigns.",
+};
+
 export default function SolutionsPage() {
   return (
     <div className="bg-slate-950 text-white">

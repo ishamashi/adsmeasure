@@ -3,6 +3,12 @@ import { FeaturesHero } from "@/components/landing/FeaturesHero";
 import { CtaSection } from "@/components/landing/CtaSection";
 import { features } from "@/lib/featureData";
 import { FeatureCard } from "@/components/landing/FeatureCard";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Platform Features",
+  description: "Discover the powerful features of the UrbanCounting platform, including real-time data streaming, multi-location management, and AI-powered analytics.",
+};
 
 export default function FeaturesPage() {
   return (
