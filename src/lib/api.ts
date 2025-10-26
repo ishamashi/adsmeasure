@@ -1,12 +1,26 @@
 // src/lib/api.ts
 import axios from "axios";
+import Cookies from "js-cookie"; 
 
-// Buat instance axios dengan konfigurasi dasar
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api",
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:9898/api",
   headers: {
     "Content-Type": "application/json",
   },
 });
+
+api.interceptors.request.use(
+  (config) => {
+    const token = Cookies.get("token");
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 export default api;
