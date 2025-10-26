@@ -1,8 +1,11 @@
 // src/components/platform/Header.tsx
+"use client"; // <-- TAMBAHKAN BARIS INI
 import { Search, Bell } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { useAuth } from "@/context/AuthContext"; // <-- Impor custom hook kita
 
 export function Header() {
+  const { user, logout } = useAuth(); // <-- Gunakan hook untuk mendapatkan data dan fungsi
   return (
     <header className="flex h-16 items-center justify-between bg-white shadow-card px-6">
       <div>
@@ -18,9 +21,23 @@ export function Header() {
           <Bell className="h-5 w-5 text-gray-600" />
         </Button>
         {/* Placeholder untuk User Dropdown */}
-        <div className="h-10 w-10 rounded-full bg-gradient-brand flex items-center justify-center text-white font-bold">
-          <span>A</span>
-        </div>
+        {user ? (
+          <div className="flex items-center gap-4">
+            <div className="text-right">
+              <p className="text-sm font-semibold">{user.name}</p>
+              <p className="text-xs text-gray-500">{user.email}</p>
+            </div>
+            <div className="h-10 w-10 rounded-full bg-gradient-brand flex items-center justify-center text-white font-bold">
+              <span>{user.name?.charAt(0).toUpperCase()}</span>
+            </div>
+            <Button variant="outline" onClick={logout}>
+              Logout
+            </Button>
+          </div>
+        ) : (
+          // Tampilkan placeholder jika user belum termuat
+          <div className="h-10 w-24 bg-gray-200 animate-pulse rounded-md"></div>
+        )}
       </div>
     </header>
   );
