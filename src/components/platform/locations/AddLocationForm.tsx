@@ -8,11 +8,12 @@ import { Button } from "@/components/ui/Button";
 interface AddLocationFormProps {
   onSubmit: (data: { name: string; address: string }) => Promise<void>;
   onClose: () => void;
+  initialData?: { name: string; address: string } | null; // Props baru
 }
 
-export function AddLocationForm({ onSubmit, onClose }: AddLocationFormProps) {
-  const [name, setName] = useState("");
-  const [address, setAddress] = useState("");
+export function AddLocationForm({ onSubmit, onClose, initialData }: AddLocationFormProps) {
+  const [name, setName] = useState(initialData?.name || "");
+  const [address, setAddress] = useState(initialData?.address || "");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

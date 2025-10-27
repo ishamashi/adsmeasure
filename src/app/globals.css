@@ -10,31 +10,64 @@
   --secondary: #0ea5e9;
   --accent: #8b5cf6;
   --dark: #0f172a;
-  
+
   /* Extended color palette */
   --success: #10b981;
   --warning: #f59e0b;
   --danger: #ef4444;
   --info: #3b82f6;
-  
+
   /* Typography */
-  --font-family-sans: 'Inter', system-ui, sans-serif;
-  --font-family-display: 'Cal Sans', 'Inter', system-ui, sans-serif;
-  
+  --font-family-sans: "Inter", system-ui, sans-serif;
+  --font-family-display: "Cal Sans", "Inter", system-ui, sans-serif;
+
   /* Spacing scale untuk dashboard */
   --spacing-18: 4.5rem;
   --spacing-22: 5.5rem;
-  
+
   /* Border radius */
   --radius-card: 1rem;
   --radius-button: 0.5rem;
-  
+
   /* Shadows */
   --shadow-glow: 0 0 20px rgba(37, 99, 235, 0.3);
   --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  
+
   /* Breakpoints - Tailwind v4 custom */
   --breakpoint-3xl: 1920px;
+}
+
+@theme {
+  /* 1. Definisikan @keyframes kamu (ini sintaks CSS biasa) */
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes scaleIn {
+    0% {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* 2. Daftarkan animasinya sebagai CSS variable 
+     (BUKAN pake object kayak di JS) 
+  */
+
+  /* Ini akan membuat utility class 'animate-fadeIn' */
+  --animate-fadeIn: fadeIn 0.2s ease-out;
+
+  /* Ini akan membuat utility class 'animate-scaleIn' */
+  --animate-scaleIn: scaleIn 0.2s ease-out;
 }
 
 @theme inline {
@@ -100,13 +133,18 @@ button {
 button:disabled {
   @apply bg-gray-400 cursor-not-allowed;
 }
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   @apply font-display;
   margin-top: 0;
   margin-bottom: 0.5rem;
 }
 p {
-  margin-bottom: 1rem;
+  margin-bottom: 0rem;
 }
 img {
   max-width: 100%;
