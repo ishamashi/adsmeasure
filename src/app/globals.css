@@ -114,6 +114,33 @@
   background-clip: text;
 }
 
+@media print {
+  /* Sembunyikan semua elemen di body secara default */
+  body * {
+    visibility: hidden;
+  }
+
+  /* Tampilkan hanya area konten laporan dan semua elemen di dalamnya */
+  #print-area,
+  #print-area * {
+    visibility: visible;
+  }
+
+  /* Posisikan area cetak di sudut kiri atas halaman */
+  #print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  /* Hapus bayangan atau border yang tidak perlu pada card saat dicetak */
+  #print-area .no-print-styles {
+    box-shadow: none !important;
+    border: none !important;
+  }
+}
+
 /* Global styles */
 body {
   @apply bg-white text-gray-900 font-sans;

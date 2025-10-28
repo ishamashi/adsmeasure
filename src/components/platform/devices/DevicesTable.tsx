@@ -2,7 +2,8 @@
 "use client";
 import { Button } from "@/components/ui/Button";
 import { MoreHorizontal } from "lucide-react";
-import { Device } from '@/types'; // <-- 2. Impor dari sini
+import { Device } from "@/types"; // <-- 2. Impor dari sini
+import { useRouter } from "next/navigation"; // Impor useRouter
 import { LocationActions } from "@/components/platform/locations/LocationActions"; // Gunakan kembali komponen ini!
 
 interface DevicesTableProps {
@@ -12,6 +13,12 @@ interface DevicesTableProps {
 }
 
 export function DevicesTable({ devices, onEdit, onDelete }: DevicesTableProps) {
+  const router = useRouter();
+
+  const handleRowClick = (deviceId: number) => {
+    router.push(`/devices/${deviceId}`);
+  };
+
   return (
     <table className="min-w-full divide-y divide-gray-200">
       <thead className="bg-gray-50">
@@ -26,11 +33,11 @@ export function DevicesTable({ devices, onEdit, onDelete }: DevicesTableProps) {
       </thead>
       <tbody className="bg-white divide-y divide-gray-200">
         {devices.map((device) => (
-          <tr key={device.id} className="hover:bg-gray-50">
+          <tr key={device.id} className="cursor-pointer hover:bg-gray-50" onClick={() => handleRowClick(device.id)}>
             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{device.name}</td>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{device.device_uid}</td>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{device.status}</td>
-            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium" onClick={(e) => e.stopPropagation()}>
               <LocationActions onEdit={() => onEdit(device)} onDelete={() => onDelete(device)} />
             </td>
           </tr>
