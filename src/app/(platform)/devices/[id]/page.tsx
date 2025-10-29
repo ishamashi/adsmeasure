@@ -161,7 +161,7 @@ export default function DeviceDetailPage() {
           <>
             <Card>
               <CardContent className="p-4">
-                <StatsChart data={stats} title="People Traffic Trend" lines={[{ dataKey: "people_count", name: "People", color: "#3b82f6" }]} />
+                <StatsChart data={stats} title="People Traffic Trend" elements={[{ dataKey: "people_count", name: "People", color: "#3b82f6", type: "line" }]} />
               </CardContent>
             </Card>
 
@@ -170,9 +170,9 @@ export default function DeviceDetailPage() {
                 <StatsChart
                   data={stats}
                   title="Vehicle Traffic Trend"
-                  lines={[
-                    { dataKey: "cars_count", name: "Cars", color: "#2563eb" },
-                    { dataKey: "motorcycles_count", name: "Motorcycles", color: "#0ea5e9" },
+                  elements={[
+                    { dataKey: "cars_count", name: "Cars", color: "#2563eb", type: "line" },
+                    { dataKey: "motorcycles_count", name: "Motorcycles", color: "#0ea5e9", type: "line" },
                   ]}
                 />
               </CardContent>
@@ -180,7 +180,7 @@ export default function DeviceDetailPage() {
 
             <Card>
               <CardContent className="p-4">
-                <StatsChart data={stats} title="WiFi Impressions Trend" lines={[{ dataKey: "wifi_impressions_count", name: "Impressions", color: "#8b5cf6" }]} />
+                <StatsChart data={stats} title="WiFi Impressions Trend" elements={[{ dataKey: "wifi_impressions_count", name: "Impressions", color: "#8b5cf6", type: "line" }]} />
               </CardContent>
             </Card>
           </>

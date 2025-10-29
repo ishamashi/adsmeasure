@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/Card";
 import { StatsChart } from "@/components/platform/devices/StatsChart";
 import { DistributionPieChart } from "@/components/platform/devices/DistributionPieChart";
 import { StatCard } from "@/components/platform/dashboard/StatCard";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList } from "recharts";
 import { Users, Wifi, BarChart2, Clock } from "lucide-react";
 
 export function LocationStatsSection({ statsData }: { statsData: any }) {
@@ -71,9 +71,9 @@ export function LocationStatsSection({ statsData }: { statsData: any }) {
         <StatsChart
           data={timeSeries}
           title="Overall Daily Trend"
-          lines={[
-            { dataKey: "people_count", name: "People", color: "#3b82f6" },
-            { dataKey: "vehicles_count", name: "Vehicles", color: "#0ea5e9" },
+          elements={[
+            { dataKey: "vehicles_count", name: "Vehicles", color: "#8884d8", type: "bar" },
+            { dataKey: "people_count", name: "People", color: "#ff7300", type: "line" },
           ]}
         />
       </Card>
@@ -89,7 +89,9 @@ export function LocationStatsSection({ statsData }: { statsData: any }) {
                 <XAxis dataKey="day_name" fontSize={12} />
                 <YAxis fontSize={12} />
                 <Tooltip />
-                <Bar dataKey="total_traffic" fill="#2563eb" name="Total Traffic" />
+                <Bar dataKey="total_traffic" fill="#2563eb" name="Total Traffic">
+                  <LabelList dataKey="total_traffic" position="top" fontSize={10} formatter={(label) => (typeof label === "number" ? label.toLocaleString() : label ?? "")} />
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -103,7 +105,9 @@ export function LocationStatsSection({ statsData }: { statsData: any }) {
                 <XAxis dataKey="hour_of_day" fontSize={12} interval={2} />
                 <YAxis fontSize={12} />
                 <Tooltip />
-                <Bar dataKey="average_traffic" fill="#0ea5e9" name="Average Traffic" />
+                <Bar dataKey="average_traffic" fill="#0ea5e9" name="Average Traffic">
+                  <LabelList dataKey="average_traffic" position="top" fontSize={10} formatter={(label) => (typeof label === "number" ? label.toLocaleString() : label ?? "")} />
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
