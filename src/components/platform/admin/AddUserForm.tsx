@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 
 interface AddUserFormProps {
-  onSubmit: (data: any) => Promise<void>;
+  onSubmit: (data: Record<string, string>) => Promise<void>;
   onClose: () => void;
 }
 
@@ -29,8 +29,12 @@ export function AddUserForm({ onSubmit, onClose }: AddUserFormProps) {
     setError(null);
     try {
       await onSubmit(formData);
-    } catch (err: any) {
-      setError(err.message || "Failed to add user.");
+    } catch (err: unknown) {
+      if (err && typeof err === "object" && "message" in err) {
+        setError((err as { message?: string }).message || "Failed to add user.");
+      } else {
+        setError("Failed to add user.");
+      }
     } finally {
       setIsLoading(false);
     }

@@ -19,27 +19,23 @@ export function LoginForm() {
     setError(null);
     setIsLoading(true);
 
-    // =================================================================
-    // 👇 TAMBAHKAN BARIS INI UNTUK DEBUGGING
-    console.log("Mencoba mengirim request ke:", api.defaults.baseURL + "/auth/login");
-    // =================================================================
-
     try {
       const response = await api.post("/auth/login", { email, password });
 
-      // Login berhasil, backend akan mengirimkan token
       const { token, user } = response.data;
 
-      // Simpan token di cookie
       Cookies.set("token", token, { expires: 1, secure: process.env.NODE_ENV === "production" });
-      // Anda juga bisa menyimpan info user di localStorage jika perlu diakses di banyak tempat
       localStorage.setItem("user", JSON.stringify(user));
 
-      // Arahkan ke dashboard
       router.push("/dashboard");
-    } catch (err: any) {
+    } catch (err: unknown) {
+      if (err && typeof err === "object" && "response" in err) {
+        const errorObj = err as { response?: { data?: { message?: string } } };
+        setError(errorObj.response?.data?.message || "Login failed. Please try again.");
+      } else {
+        setError("Login failed. Please try again.");
+      }
       console.error("Login failed:", err);
-      setError(err.response?.data?.message || "Login failed. Please try again.");
     } finally {
       setIsLoading(false);
     }

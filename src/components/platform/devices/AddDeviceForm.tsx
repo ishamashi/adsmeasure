@@ -1,7 +1,7 @@
 // src/components/platform/devices/AddDeviceForm.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import useSWR from "swr";
 import { Device } from "@/types"; // <-- 2. Impor dari sini
 import { Button } from "@/components/ui/Button";
@@ -39,8 +39,12 @@ export function AddDeviceForm({ onSubmit, onClose, initialData }: AddDeviceFormP
         created_at: initialData?.created_at || "",
         updated_at: initialData?.updated_at || ""
       });
-    } catch (err: any) {
-      setError(err.message || "Failed to save device");
+    } catch (err: unknown) {
+      if (err && typeof err === "object" && "message" in err) {
+        setError((err as { message?: string }).message || "Failed to save device");
+      } else {
+        setError("Failed to save device");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -69,7 +73,7 @@ export function AddDeviceForm({ onSubmit, onClose, initialData }: AddDeviceFormP
             Select a type
           </option>
           {deviceTypes &&
-            deviceTypes.map((type: any) => (
+            deviceTypes.map((type: { id: number; name: string }) => (
               <option key={type.id} value={type.id}>
                 {type.name}
               </option>

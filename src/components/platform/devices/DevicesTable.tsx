@@ -1,7 +1,7 @@
 // src/components/platform/devices/DevicesTable.tsx
 "use client";
-import { Button } from "@/components/ui/Button";
-import { MoreHorizontal } from "lucide-react";
+// import { Button } from "@/components/ui/Button";
+// import { MoreHorizontal } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Device } from "@/types"; // <-- 2. Impor dari sini
 import { useRouter } from "next/navigation"; // Impor useRouter

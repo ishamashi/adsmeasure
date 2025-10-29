@@ -4,10 +4,17 @@ import html2canvas from "html2canvas";
 import { format } from "date-fns";
 
 // Definisikan tipe untuk data yang akan kita terima
+interface PdfSummary {
+  avgMale: number;
+  avgFemale: number;
+  totalDwellA: number;
+  // Tambahkan properti lain sesuai kebutuhan
+}
+
 interface PdfData {
   locationName: string;
   dateRange: { from: Date; to: Date };
-  summary: any;
+  summary: PdfSummary;
   timeSeriesChartId: string; // ID elemen chart time series
   pieChartsContainerId: string; // ID elemen kontainer pie chart
 }

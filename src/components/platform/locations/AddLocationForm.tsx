@@ -23,8 +23,12 @@ export function AddLocationForm({ onSubmit, onClose, initialData }: AddLocationF
     setError(null);
     try {
       await onSubmit({ name, address });
-    } catch (err: any) {
-      setError(err.message || "Failed to add location");
+    } catch (err: unknown) {
+      if (err && typeof err === "object" && "message" in err) {
+        setError((err as { message?: string }).message || "Failed to add location");
+      } else {
+        setError("Failed to add location");
+      }
     } finally {
       setIsLoading(false);
     }

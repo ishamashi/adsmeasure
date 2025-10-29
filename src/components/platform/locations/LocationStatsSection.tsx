@@ -1,15 +1,41 @@
 // src/components/platform/locations/LocationStatsSection.tsx
 "use client";
 
-import { useMemo } from "react";
+// import { useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/Card";
 import { StatsChart } from "@/components/platform/devices/StatsChart";
 import { DistributionPieChart } from "@/components/platform/devices/DistributionPieChart";
 import { StatCard } from "@/components/platform/dashboard/StatCard";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList } from "recharts";
-import { Users, Wifi, BarChart2, Clock } from "lucide-react";
+import { Users, Wifi, BarChart2 } from "lucide-react";
 
-export function LocationStatsSection({ statsData }: { statsData: any }) {
+// Tipe data untuk statistik lokasi
+interface LocationStatsData {
+  timeSeries: Record<string, unknown>[];
+  summary: {
+    avgMale: string;
+    avgFemale: string;
+    avgChild: string;
+    avgTeen: string;
+    avgAdult: string;
+    avgSenior: string;
+    totalDwellA: number;
+    totalDwellB: number;
+    totalDwellC: number;
+    totalPeople: number;
+    totalImpressions: number;
+    avgTrafficPerDay: number;
+    avgPeoplePerDay: number;
+  };
+  peakDays: Record<string, unknown>[];
+  peakHours: Array<{
+    hour_of_day: number | string;
+    average_traffic: number;
+    [key: string]: unknown;
+  }>;
+}
+
+export function LocationStatsSection({ statsData }: { statsData: LocationStatsData }) {
   if (!statsData || !statsData.timeSeries || statsData.timeSeries.length === 0) {
     return <p className="text-center text-gray-500 py-8">No data found for the selected period.</p>;
   }
@@ -34,7 +60,7 @@ export function LocationStatsSection({ statsData }: { statsData: any }) {
   ];
 
   // Pastikan untuk menyesuaikan peakHours format
-  const formattedPeakHours = peakHours.map((h: any) => ({
+  const formattedPeakHours = peakHours.map((h) => ({
     ...h,
     hour_of_day: `${String(h.hour_of_day).padStart(2, "0")}:00`,
   }));

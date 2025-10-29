@@ -18,15 +18,18 @@ export default function UserManagementPage() {
   const { data: users, error, isLoading, mutate } = useSWR<User[]>("/users", fetcher);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleAddUser = async (data: any) => {
+  const handleAddUser = async (data: Record<string, unknown>) => {
     try {
       await api.post("/users", data);
-      mutate(); // Refresh data tabel
-      setIsModalOpen(false); // Tutup modal
-    } catch (error: any) {
+      mutate(); 
+      setIsModalOpen(false);
+    } catch (error: unknown) {
       console.error("Failed to add user:", error);
-      // Lempar error agar bisa ditampilkan di form
-      throw new Error(error.response?.data?.message || "Failed to add user.");
+      if (error && typeof error === "object" && "response" in error) {
+        const errObj = error as { response?: { data?: { message?: string } } };
+        throw new Error(errObj.response?.data?.message || "Failed to add user.");
+      }
+      throw new Error("Failed to add user.");
     }
   };
 

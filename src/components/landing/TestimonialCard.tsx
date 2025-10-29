@@ -12,7 +12,7 @@ export function TestimonialCard({ testimonial }: TestimonialCardProps) {
   return (
     <Card className="bg-slate-800/50 border-slate-700 text-white h-full flex flex-col">
       <CardContent className="pt-6 flex-grow">
-        <p className="italic text-slate-300">"{testimonial.quote}"</p>
+        <p className="italic text-slate-300">&ldquo;{testimonial.quote}&ldquo;</p>
       </CardContent>
       <CardFooter className="flex items-center gap-4">
         <Image src={testimonial.avatarUrl} alt={`Avatar of ${testimonial.name}`} width={48} height={48} className="rounded-full" />

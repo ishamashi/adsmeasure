@@ -2,7 +2,19 @@
 "use client";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
-export function PeakTrafficChart({ data, title, dataKey, xAxisKey }: { data: any[]; title: string; dataKey: string; xAxisKey: string }) {
+interface PeakTrafficData {
+  time: string;
+  value: number;
+}
+
+interface PeakTrafficChartProps {
+  data: PeakTrafficData[];
+  title: string;
+  dataKey: string;
+  xAxisKey: string;
+}
+
+const PeakTrafficChart: React.FC<PeakTrafficChartProps> = ({ data, title, dataKey, xAxisKey }) => {
   return (
     <div style={{ width: "100%", height: 350 }}>
       <h3 className="text-lg font-semibold text-gray-800 mb-4">{title}</h3>
@@ -17,4 +29,4 @@ export function PeakTrafficChart({ data, title, dataKey, xAxisKey }: { data: any
       </ResponsiveContainer>
     </div>
   );
-}
+};

@@ -23,7 +23,7 @@ export default function LocationDetailPage() {
   const params = useParams();
   const { id: locationId } = params as { id: string };
 
-  const [dateRange, setDateRange] = useState<DateRange | undefined>(); // State untuk menyimpan tanggal
+  const [, setDateRange] = useState<DateRange | undefined>(); // State untuk menyimpan tanggal
   const [statsUrl, setStatsUrl] = useState<string | null>(null);
 
   // SWR akan "mendengarkan" perubahan pada `statsUrl`.
@@ -65,7 +65,7 @@ export default function LocationDetailPage() {
           {isLoading && <p className="text-center py-8">Generating report...</p>}
           {error && <p className="text-center py-8 text-red-500">Failed to generate report.</p>}
           <div id="pdf-content">{stats && <LocationStatsSection statsData={stats} />}</div>
-          {!statsUrl && <p className="text-center py-8 text-gray-500">Please select a date range and click "Generate" to view statistics.</p>}
+          {!statsUrl && <p className="text-center py-8 text-gray-500">Please select a date range and click &ldquo;Generate&ldquo; to view statistics.</p>}
         </CollapsibleSection>
 
         <CollapsibleSection title="Device Management" defaultOpen={false}>

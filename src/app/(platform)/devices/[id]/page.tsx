@@ -6,9 +6,9 @@ import { useParams } from "next/navigation";
 import useSWR from "swr";
 import api from "@/lib/api";
 import Link from "next/link";
-import { ArrowLeft, Car, User, Wifi, Users } from "lucide-react";
+import { ArrowLeft, Car, Wifi, Users } from "lucide-react";
 import { PageHeader } from "@/components/platform/PageHeader";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Card, CardContent } from "@/components/ui/Card";
 import { StatsChart } from "@/components/platform/devices/StatsChart";
 import { StatCard } from "@/components/platform/dashboard/StatCard";
 import { DistributionPieChart } from "@/components/platform/devices/DistributionPieChart";
@@ -19,13 +19,10 @@ export default function DeviceDetailPage() {
   const params = useParams();
   const { id: deviceId } = params;
 
-  // Fetch data statistik
   const { data: stats, error, isLoading } = useSWR(deviceId ? `/devices/${deviceId}/stats` : null, fetcher);
 
-  // Hitung total agregat menggunakan useMemo agar tidak dihitung ulang setiap render
   const summary = useMemo(() => {
     if (!stats || stats.length === 0) {
-      // Inisialisasi semua nilai dengan 0 jika tidak ada data
       return {
         totalPeople: 0,
         totalVehicles: 0,
@@ -42,24 +39,34 @@ export default function DeviceDetailPage() {
       };
     }
 
-    // Gunakan .reduce untuk menghitung total dari semua data per jam
+    type StatsAccumulator = {
+      totalPeople: number;
+      totalVehicles: number;
+      totalWifi: number;
+      totalMaleWeight: number;
+      totalChildWeight: number;
+      totalTeenWeight: number;
+      totalAdultWeight: number;
+      totalDwellA: number;
+      totalDwellB: number;
+      totalDwellC: number;
+    };
+
     const totals = stats.reduce(
-      (acc: any, current: any) => {
-        const people = current.people_count || 0;
+      (acc: StatsAccumulator, current: Record<string, unknown>) => {
+        const people = Number(current.people_count ?? 0);
         acc.totalPeople += people;
-        acc.totalVehicles += (current.cars_count || 0) + (current.motorcycles_count || 0) + (current.trucks_count || 0) + (current.buses_count || 0);
-        acc.totalWifi += current.wifi_impressions_count || 0;
+        acc.totalVehicles += Number(current.cars_count ?? 0) + Number(current.motorcycles_count ?? 0) + Number(current.trucks_count ?? 0) + Number(current.buses_count ?? 0);
+        acc.totalWifi += Number(current.wifi_impressions_count ?? 0);
 
-        // Rata-rata tertimbang untuk persentase
-        acc.totalMaleWeight += parseFloat(current.male_percentage || 0) * people;
-        acc.totalChildWeight += parseFloat(current.age_child_percentage || 0) * people;
-        acc.totalTeenWeight += parseFloat(current.age_teen_percentage || 0) * people;
-        acc.totalAdultWeight += parseFloat(current.age_adult_percentage || 0) * people;
+        acc.totalMaleWeight += Number(current.male_percentage ?? 0) * people;
+        acc.totalChildWeight += Number(current.age_child_percentage ?? 0) * people;
+        acc.totalTeenWeight += Number(current.age_teen_percentage ?? 0) * people;
+        acc.totalAdultWeight += Number(current.age_adult_percentage ?? 0) * people;
 
-        // Total untuk dwelling
-        acc.totalDwellA += current.wifi_dwell_a_count || 0;
-        acc.totalDwellB += current.wifi_dwell_b_count || 0;
-        acc.totalDwellC += current.wifi_dwell_c_count || 0;
+        acc.totalDwellA += Number(current.wifi_dwell_a_count ?? 0);
+        acc.totalDwellB += Number(current.wifi_dwell_b_count ?? 0);
+        acc.totalDwellC += Number(current.wifi_dwell_c_count ?? 0);
 
         return acc;
       },
@@ -91,7 +98,6 @@ export default function DeviceDetailPage() {
       avgChild: parseFloat(avgChild.toFixed(2)),
       avgTeen: parseFloat(avgTeen.toFixed(2)),
       avgAdult: parseFloat(avgAdult.toFixed(2)),
-      // Pastikan total usia 100%
       avgSenior: parseFloat((100 - avgChild - avgTeen - avgAdult).toFixed(2)),
       totalDwellA: totals.totalDwellA,
       totalDwellB: totals.totalDwellB,
@@ -99,7 +105,6 @@ export default function DeviceDetailPage() {
     };
   }, [stats]);
 
-  // Data yang sudah diformat untuk Pie Charts
   const genderData = [
     { name: "Male", value: summary.avgMale },
     { name: "Female", value: summary.avgFemale },

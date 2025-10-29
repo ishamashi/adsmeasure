@@ -1,7 +1,7 @@
 // src/components/platform/Header.tsx
 "use client";
 
-import { Search, Bell } from "lucide-react";
+// import { Search, Bell } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/context/AuthContext";
 import { usePathname } from "next/navigation"; // Hook untuk mendapatkan path saat ini

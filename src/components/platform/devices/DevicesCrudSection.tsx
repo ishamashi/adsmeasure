@@ -45,7 +45,7 @@ export function DevicesCrudSection({ locationId }: { locationId: string }) {
     setSelectedDevice(null);
   };
 
-  const handleFormSubmit = async (data: any) => {
+  const handleFormSubmit = async (data: Omit<Device, "id">) => {
     setIsProcessing(true);
     try {
       const payload = { ...data, location_id: Number(locationId) };
@@ -56,7 +56,7 @@ export function DevicesCrudSection({ locationId }: { locationId: string }) {
       }
       mutate();
       handleCloseModals();
-    } catch (err) {
+    } catch (err: unknown) {
       console.error(err);
       throw new Error("Failed to save device.");
     } finally {

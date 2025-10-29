@@ -12,7 +12,7 @@ interface ChartElement {
 }
 
 interface StatsChartProps {
-  data: any[];
+  data: Record<string, unknown>[];
   elements: ChartElement[]; // Ganti `lines` menjadi `elements`
   title: string;
 }

@@ -1,7 +1,7 @@
 // src/components/ui/Popover.tsx
 "use client";
 
-import React, { useState, useRef, useEffect, createContext, useContext, isValidElement, cloneElement } from "react";
+import React, { useState, useRef, useEffect, createContext, useContext, isValidElement } from "react";
 
 interface PopoverContextType {
   isOpen: boolean;
@@ -28,15 +28,15 @@ export function PopoverTrigger({ children }: { children: React.ReactNode }) {
   }
 
   // Pastikan children adalah ReactElement dengan props yang menerima onClick
-  const child = children as React.ReactElement<any>;
+  const child = children as React.ReactElement<Record<string, unknown>>;
 
   return React.cloneElement(child, {
     ...child.props,
     onClick: (event: React.MouseEvent<HTMLElement>) => {
-      setIsOpen((prev) => !prev);
-      if (child.props.onClick) {
-        child.props.onClick(event);
+      if (typeof child.props.onClick === 'function') {
+        (child.props.onClick as (event: React.MouseEvent<HTMLElement>) => void)(event);
       }
+      setIsOpen((prev) => !prev);
     },
   });
 }

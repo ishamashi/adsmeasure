@@ -12,7 +12,7 @@ const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
 export default function DashboardPage() {
   const { user } = useAuth();
-  const { data: summary, error, isLoading } = useSWR("/dashboard/summary", fetcher);
+  const { data: summary, isLoading } = useSWR("/dashboard/summary", fetcher);
 
   const welcomeMessage = user ? `Welcome back, ${user.name}!` : "Welcome back!";
 
