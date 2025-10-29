@@ -1,4 +1,3 @@
-// src/app/(platform)/devices/[id]/page.tsx
 "use client";
 
 import { useMemo } from "react";
@@ -12,83 +11,49 @@ import { Card, CardContent } from "@/components/ui/Card";
 import { StatsChart } from "@/components/platform/devices/StatsChart";
 import { StatCard } from "@/components/platform/dashboard/StatCard";
 import { DistributionPieChart } from "@/components/platform/devices/DistributionPieChart";
+import { useAuth } from "@/context/AuthContext";
+import { CollapsibleSection } from "@/components/platform/CollapsibleSection";
+import { AssignLicenseForm } from "@/components/platform/licenses/AssignLicenseForm";
+import { LicenseInfo } from "@/components/platform/licenses/LicenseInfo";
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
 export default function DeviceDetailPage() {
+  const { user } = useAuth();
   const params = useParams();
-  const { id: deviceId } = params;
+  const { id: deviceId } = params as { id: string };
 
-  const { data: stats, error, isLoading } = useSWR(deviceId ? `/devices/${deviceId}/stats` : null, fetcher);
+  // Fetch 1: Detail perangkat (termasuk info lisensi)
+  const { data: device, error: deviceError, isLoading: deviceLoading, mutate: mutateDevice } = useSWR(deviceId ? `/devices/${deviceId}` : null, fetcher);
+
+  // Fetch 2: Data statistik
+  const { data: stats, error: statsError, isLoading: statsLoading } = useSWR(deviceId ? `/devices/${deviceId}/stats` : null, fetcher);
 
   const summary = useMemo(() => {
     if (!stats || stats.length === 0) {
-      return {
-        totalPeople: 0,
-        totalVehicles: 0,
-        totalWifi: 0,
-        avgMale: 0,
-        avgFemale: 0,
-        avgChild: 0,
-        avgTeen: 0,
-        avgAdult: 0,
-        avgSenior: 0,
-        totalDwellA: 0,
-        totalDwellB: 0,
-        totalDwellC: 0,
-      };
+      return { totalPeople: 0, totalVehicles: 0, totalWifi: 0, avgMale: 0, avgFemale: 0, avgChild: 0, avgTeen: 0, avgAdult: 0, avgSenior: 0, totalDwellA: 0, totalDwellB: 0, totalDwellC: 0 };
     }
-
-    type StatsAccumulator = {
-      totalPeople: number;
-      totalVehicles: number;
-      totalWifi: number;
-      totalMaleWeight: number;
-      totalChildWeight: number;
-      totalTeenWeight: number;
-      totalAdultWeight: number;
-      totalDwellA: number;
-      totalDwellB: number;
-      totalDwellC: number;
-    };
-
     const totals = stats.reduce(
-      (acc: StatsAccumulator, current: Record<string, unknown>) => {
+      (acc: any, current: any) => {
         const people = Number(current.people_count ?? 0);
         acc.totalPeople += people;
         acc.totalVehicles += Number(current.cars_count ?? 0) + Number(current.motorcycles_count ?? 0) + Number(current.trucks_count ?? 0) + Number(current.buses_count ?? 0);
         acc.totalWifi += Number(current.wifi_impressions_count ?? 0);
-
         acc.totalMaleWeight += Number(current.male_percentage ?? 0) * people;
         acc.totalChildWeight += Number(current.age_child_percentage ?? 0) * people;
         acc.totalTeenWeight += Number(current.age_teen_percentage ?? 0) * people;
         acc.totalAdultWeight += Number(current.age_adult_percentage ?? 0) * people;
-
         acc.totalDwellA += Number(current.wifi_dwell_a_count ?? 0);
         acc.totalDwellB += Number(current.wifi_dwell_b_count ?? 0);
         acc.totalDwellC += Number(current.wifi_dwell_c_count ?? 0);
-
         return acc;
       },
-      {
-        totalPeople: 0,
-        totalVehicles: 0,
-        totalWifi: 0,
-        totalMaleWeight: 0,
-        totalChildWeight: 0,
-        totalTeenWeight: 0,
-        totalAdultWeight: 0,
-        totalDwellA: 0,
-        totalDwellB: 0,
-        totalDwellC: 0,
-      }
+      { totalPeople: 0, totalVehicles: 0, totalWifi: 0, totalMaleWeight: 0, totalChildWeight: 0, totalTeenWeight: 0, totalAdultWeight: 0, totalDwellA: 0, totalDwellB: 0, totalDwellC: 0 }
     );
-
     const avgMale = totals.totalPeople > 0 ? totals.totalMaleWeight / totals.totalPeople : 0;
     const avgChild = totals.totalPeople > 0 ? totals.totalChildWeight / totals.totalPeople : 0;
     const avgTeen = totals.totalPeople > 0 ? totals.totalTeenWeight / totals.totalPeople : 0;
     const avgAdult = totals.totalPeople > 0 ? totals.totalAdultWeight / totals.totalPeople : 0;
-
     return {
       totalPeople: totals.totalPeople,
       totalVehicles: totals.totalVehicles,
@@ -121,60 +86,76 @@ export default function DeviceDetailPage() {
     { name: "Dwell C", value: summary.totalDwellC },
   ];
 
-  // Di aplikasi nyata, kita juga akan fetch detail perangkat itu sendiri
-  const deviceName = "Device Details"; // Placeholder
+  if (deviceLoading) {
+    return <div className="p-8 text-center">Loading device information...</div>;
+  }
+
+  if (deviceError) {
+    return <div className="p-8 text-center text-red-500">Failed to load device information.</div>;
+  }
 
   return (
     <>
-      <Link href={`/locations`} className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 mb-4">
+      <Link href={`/locations/${device?.location_id}`} className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 mb-4">
         <ArrowLeft className="w-4 h-4" />
-        Back to locations
+        Back to Location
       </Link>
-      <PageHeader title={deviceName} description={`Showing statistics for the last 24 hours.`} />
+      <PageHeader title={device?.name || "Device Details"} description={`UID: ${device?.device_uid || "N/A"}`} />
 
-      {/* Bagian Kartu Ringkasan */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
-        <StatCard title="Total People Detected" value={summary.totalPeople.toLocaleString()} icon={<Users className="h-5 w-5" />} description="Sum of people counted in 24h" isLoading={isLoading} />
-        <StatCard title="Total Vehicles Detected" value={summary.totalVehicles.toLocaleString()} icon={<Car className="h-5 w-5" />} description="Sum of all vehicle types in 24h" isLoading={isLoading} />
-        <StatCard title="Total WiFi Impressions" value={summary.totalWifi.toLocaleString()} icon={<Wifi className="h-5 w-5" />} description="Sum of unique devices detected" isLoading={isLoading} />
-      </div>
+      {user && user.role < 20 && (
+        <div className="mb-8">
+          <CollapsibleSection title="License Management" defaultOpen={true}>
+            {device && device.license_status ? (
+              <LicenseInfo license={device} />
+            ) : (
+              <div>
+                <p className="text-sm text-gray-500 mb-4">This device does not have an active license.</p>
+                <AssignLicenseForm deviceId={Number(deviceId)} onSuccess={() => mutateDevice()} />
+              </div>
+            )}
+          </CollapsibleSection>
+        </div>
+      )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-        <Card className="lg:col-span-1">
-          <CardContent className="p-2">
-            <DistributionPieChart data={genderData} title="Gender Distribution (Avg)" />
-          </CardContent>
-        </Card>
-        <Card className="lg:col-span-1">
-          <CardContent className="p-2">
-            <DistributionPieChart data={ageData} title="Age Distribution (Avg)" />
-          </CardContent>
-        </Card>
-        <Card className="lg:col-span-1">
-          <CardContent className="p-2">
-            <DistributionPieChart data={dwellingData} title="WiFi Dwelling (Total)" />
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Bagian Chart */}
       <div className="space-y-8">
-        {isLoading && <div className="h-[300px] w-full flex items-center justify-center rounded-lg bg-gray-100">Loading charts...</div>}
-        {error && <div className="h-[300px] w-full flex items-center justify-center text-red-500 bg-red-50 rounded-lg">Failed to load chart data.</div>}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <StatCard title="Total People (24h)" value={summary.totalPeople.toLocaleString()} icon={<Users className="h-5 w-5" />} isLoading={statsLoading} />
+          <StatCard title="Total Vehicles (24h)" value={summary.totalVehicles.toLocaleString()} icon={<Car className="h-5 w-5" />} isLoading={statsLoading} />
+          <StatCard title="Total WiFi Impressions (24h)" value={summary.totalWifi.toLocaleString()} icon={<Wifi className="h-5 w-5" />} isLoading={statsLoading} />
+        </div>
 
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <Card className="lg:col-span-1">
+            <CardContent className="p-2">
+              <DistributionPieChart data={genderData} title="Gender Distribution (Avg)" />
+            </CardContent>
+          </Card>
+          <Card className="lg:col-span-1">
+            <CardContent className="p-2">
+              <DistributionPieChart data={ageData} title="Age Distribution (Avg)" />
+            </CardContent>
+          </Card>
+          <Card className="lg:col-span-1">
+            <CardContent className="p-2">
+              <DistributionPieChart data={dwellingData} title="WiFi Dwelling (Total)" />
+            </CardContent>
+          </Card>
+        </div>
+
+        {statsLoading && <div className="h-[300px] w-full flex items-center justify-center rounded-lg bg-gray-50 animate-pulse">Loading charts...</div>}
+        {statsError && <div className="h-[300px] w-full flex items-center justify-center text-red-500">Failed to load chart data.</div>}
         {stats && stats.length > 0 && (
           <>
             <Card>
               <CardContent className="p-4">
-                <StatsChart data={stats} title="People Traffic Trend" elements={[{ dataKey: "people_count", name: "People", color: "#3b82f6", type: "line" }]} />
+                <StatsChart data={stats} title="People Traffic Trend (24h)" elements={[{ dataKey: "people_count", name: "People", color: "#3b82f6", type: "line" }]} />
               </CardContent>
             </Card>
-
             <Card>
               <CardContent className="p-4">
                 <StatsChart
                   data={stats}
-                  title="Vehicle Traffic Trend"
+                  title="Vehicle Traffic Trend (24h)"
                   elements={[
                     { dataKey: "cars_count", name: "Cars", color: "#2563eb", type: "line" },
                     { dataKey: "motorcycles_count", name: "Motorcycles", color: "#0ea5e9", type: "line" },
@@ -182,16 +163,9 @@ export default function DeviceDetailPage() {
                 />
               </CardContent>
             </Card>
-
-            <Card>
-              <CardContent className="p-4">
-                <StatsChart data={stats} title="WiFi Impressions Trend" elements={[{ dataKey: "wifi_impressions_count", name: "Impressions", color: "#8b5cf6", type: "line" }]} />
-              </CardContent>
-            </Card>
           </>
         )}
-
-        {stats && stats.length === 0 && <div className="h-[300px] w-full flex items-center justify-center text-gray-500 bg-gray-50 rounded-lg">No data available for this period. The device might be inactive or has just been added.</div>}
+        {stats && stats.length === 0 && <div className="h-[300px] w-full flex items-center justify-center text-gray-500">No data available for this period.</div>}
       </div>
     </>
   );
