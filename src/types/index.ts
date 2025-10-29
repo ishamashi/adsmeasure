@@ -1,4 +1,10 @@
 // src/types/index.ts
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: number;
+}
 
 export interface Device {
   id: number;
@@ -11,7 +17,6 @@ export interface Device {
   updated_at: string;
 }
 
-// Anda juga bisa memindahkan tipe Location ke sini
 export interface Location {
   id: number;
   name: string;

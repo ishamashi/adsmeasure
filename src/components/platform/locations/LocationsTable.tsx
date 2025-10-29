@@ -1,16 +1,10 @@
 // src/components/platform/locations/LocationsTable.tsx
 // import { Button } from "@/components/ui/Button";
 // import { MoreHorizontal } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 import { LocationActions } from "./LocationActions";
 import { useRouter } from "next/navigation";
-
-// Definisikan tipe data untuk satu lokasi
-interface Location {
-  id: number;
-  name: string;
-  address: string;
-  created_at: string;
-}
+import { Location } from "@/types";
 
 interface LocationsTableProps {
   locations: Location[];
@@ -28,6 +22,7 @@ const TableRowLink = ({ href, children }: { href: string; children: React.ReactN
 };
 
 export function LocationsTable({ locations, onEdit, onDelete }: LocationsTableProps) {
+  const { user } = useAuth();
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full divide-y divide-gray-200">
@@ -42,9 +37,11 @@ export function LocationsTable({ locations, onEdit, onDelete }: LocationsTablePr
             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Date Added
             </th>
-            <th scope="col" className="relative px-6 py-3">
-              <span className="sr-only">Edit</span>
-            </th>
+            {user && user.role < 20 && (
+              <th scope="col" className="relative px-6 py-3">
+                <span className="sr-only">Actions</span>
+              </th>
+            )}
           </tr>
         </thead>
         <tbody>
@@ -58,10 +55,12 @@ export function LocationsTable({ locations, onEdit, onDelete }: LocationsTablePr
                 <div className="text-sm text-gray-500">{location.address}</div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(location.created_at).toLocaleDateString()}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium" onClick={(e) => e.stopPropagation()}>
-                {/* Kita hentikan propagasi agar klik di sini tidak menavigasi halaman */}
-                <LocationActions onEdit={() => onEdit(location)} onDelete={() => onDelete(location)} />
-              </td>
+              {user && user.role < 20 && (
+                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium" onClick={(e) => e.stopPropagation()}>
+                  {/* Kita hentikan propagasi agar klik di sini tidak menavigasi halaman */}
+                  <LocationActions onEdit={() => onEdit(location)} onDelete={() => onDelete(location)} />
+                </td>
+              )}
             </TableRowLink>
           ))}
         </tbody>

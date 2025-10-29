@@ -3,17 +3,11 @@
 
 import { useState, useEffect } from "react";
 import useSWR from "swr";
+import { Device } from "@/types"; // <-- 2. Impor dari sini
 import { Button } from "@/components/ui/Button";
 import api from "@/lib/api";
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
-
-interface Device {
-  id?: number;
-  name: string;
-  device_uid: string;
-  device_type_id: number;
-}
 
 interface AddDeviceFormProps {
   onSubmit: (data: Omit<Device, "id">) => Promise<void>;
@@ -36,7 +30,15 @@ export function AddDeviceForm({ onSubmit, onClose, initialData }: AddDeviceFormP
     setIsLoading(true);
     setError(null);
     try {
-      await onSubmit({ name, device_uid: deviceUid, device_type_id: Number(deviceTypeId) });
+      await onSubmit({
+        name,
+        device_uid: deviceUid,
+        device_type_id: Number(deviceTypeId),
+        status: initialData?.status || "",
+        location_id: initialData?.location_id || 0,
+        created_at: initialData?.created_at || "",
+        updated_at: initialData?.updated_at || ""
+      });
     } catch (err: any) {
       setError(err.message || "Failed to save device");
     } finally {

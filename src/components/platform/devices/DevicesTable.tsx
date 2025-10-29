@@ -2,6 +2,7 @@
 "use client";
 import { Button } from "@/components/ui/Button";
 import { MoreHorizontal } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 import { Device } from "@/types"; // <-- 2. Impor dari sini
 import { useRouter } from "next/navigation"; // Impor useRouter
 import { LocationActions } from "@/components/platform/locations/LocationActions"; // Gunakan kembali komponen ini!
@@ -13,6 +14,7 @@ interface DevicesTableProps {
 }
 
 export function DevicesTable({ devices, onEdit, onDelete }: DevicesTableProps) {
+  const { user } = useAuth();
   const router = useRouter();
 
   const handleRowClick = (deviceId: number) => {
@@ -26,9 +28,11 @@ export function DevicesTable({ devices, onEdit, onDelete }: DevicesTableProps) {
           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Device Name</th>
           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">UID</th>
           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-          <th className="relative px-6 py-3">
-            <span className="sr-only">Actions</span>
-          </th>
+          {user && user.role < 20 && (
+            <th className="relative px-6 py-3">
+              <span className="sr-only">Actions</span>
+            </th>
+          )}
         </tr>
       </thead>
       <tbody className="bg-white divide-y divide-gray-200">
@@ -37,9 +41,11 @@ export function DevicesTable({ devices, onEdit, onDelete }: DevicesTableProps) {
             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{device.name}</td>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{device.device_uid}</td>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{device.status}</td>
-            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium" onClick={(e) => e.stopPropagation()}>
-              <LocationActions onEdit={() => onEdit(device)} onDelete={() => onDelete(device)} />
-            </td>
+            {user && user.role < 20 && (
+              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium" onClick={(e) => e.stopPropagation()}>
+                <LocationActions onEdit={() => onEdit(device)} onDelete={() => onDelete(device)} />
+              </td>
+            )}
           </tr>
         ))}
       </tbody>

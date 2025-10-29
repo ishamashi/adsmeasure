@@ -2,6 +2,7 @@
 "use client";
 
 import { useState } from "react";
+import { useAuth } from '@/context/AuthContext';
 import useSWR from "swr";
 import api from "@/lib/api";
 import { Button } from "@/components/ui/Button";
@@ -14,6 +15,7 @@ import type { Device } from "@/types"; // Gunakan tipe terpusat
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
 export function DevicesCrudSection({ locationId }: { locationId: string }) {
+  const { user } = useAuth();
   const { data: devices, error, isLoading, mutate } = useSWR<Device[]>(`/devices?locationId=${locationId}`, fetcher);
 
   const [modalMode, setModalMode] = useState<"add" | "edit" | null>(null);
@@ -90,10 +92,12 @@ export function DevicesCrudSection({ locationId }: { locationId: string }) {
   return (
     <div className="space-y-4">
       <div className="text-right">
+        {user && user.role < 20 && (
         <Button onClick={handleOpenAddModal}>
           <PlusCircle className="mr-2 h-4 w-4" />
           Add Device
         </Button>
+        )}
       </div>
       {renderContent()}
 

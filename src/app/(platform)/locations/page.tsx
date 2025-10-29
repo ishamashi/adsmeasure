@@ -2,7 +2,9 @@
 "use client";
 
 import { useState } from "react";
+import { useAuth } from "@/context/AuthContext";
 import useSWR from "swr";
+import { Location } from "@/types";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
 import { PageHeader } from "@/components/platform/PageHeader";
@@ -13,16 +15,10 @@ import { DeleteConfirmationModal } from "@/components/platform/locations/DeleteC
 import api from "@/lib/api";
 import { PlusCircle } from "lucide-react";
 
-interface Location {
-  id: number;
-  name: string;
-  address: string;
-  created_at: string;
-}
-
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
 export default function LocationsPage() {
+  const { user } = useAuth(); // Dapatkan data user
   const { data: locations, error, isLoading, mutate } = useSWR<Location[]>("/locations", fetcher);
 
   const [modalMode, setModalMode] = useState<"add" | "edit" | null>(null);
@@ -98,10 +94,12 @@ export default function LocationsPage() {
   return (
     <>
       <PageHeader title="Your Locations" description="Manage all your device locations from here.">
-        <Button onClick={handleOpenAddModal}>
-          <PlusCircle className="mr-2 h-4 w-4" />
-          Add New Location
-        </Button>
+        {user && user.role < 20 && (
+          <Button onClick={handleOpenAddModal}>
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Add New Location
+          </Button>
+        )}
       </PageHeader>
 
       <Card>
