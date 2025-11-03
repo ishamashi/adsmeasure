@@ -2,7 +2,7 @@
 "use client";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
-import { BarChart3, LayoutDashboard, MapPin, Settings, BarChartHorizontal, Users } from "lucide-react";
+import { BarChart3, LayoutDashboard, MapPin, Settings, BarChartHorizontal, Users, KeyRound, Layers } from "lucide-react";
 
 export function Sidebar() {
   const { user } = useAuth();
@@ -37,6 +37,14 @@ export function Sidebar() {
             <Link href="/admin/users" className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
               <Users className="w-5 h-5" />
               <span>User Management</span>
+            </Link>
+            <Link href="/admin/licenses" className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
+              <KeyRound className="w-5 h-5" />
+              <span>License Management</span>
+            </Link>
+            <Link href="/admin/tiers" className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
+              <Layers className="w-5 h-5" />
+              <span>Tier Management</span>
             </Link>
           </nav>
         </div>
