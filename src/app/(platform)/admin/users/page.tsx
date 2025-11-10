@@ -11,6 +11,7 @@ import { PlusCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/Card";
 import { UsersTable } from "@/components/platform/admin/UsersTable";
 import { AddUserForm } from "@/components/platform/admin/AddUserForm";
+import { TableSkeleton } from "@/components/platform/TableSkeleton";
 import type { User } from "@/types";
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
@@ -36,7 +37,7 @@ export default function UserManagementPage() {
   };
 
   const renderContent = () => {
-    if (isLoading) return <p className="p-6 text-center text-gray-500">Loading users...</p>;
+    if (isLoading) return <TableSkeleton />;
     if (error) return <p className="p-6 text-center text-red-500">Failed to load users.</p>;
     if (users && users.length > 0) {
       return <UsersTable users={users} />;

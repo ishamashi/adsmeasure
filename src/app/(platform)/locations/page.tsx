@@ -13,6 +13,7 @@ import { LocationsTable } from "@/components/platform/locations/LocationsTable";
 import { LocationsEmptyState } from "@/components/platform/locations/LocationsEmptyState";
 import { AddLocationForm } from "@/components/platform/locations/AddLocationForm";
 import { DeleteConfirmationModal } from "@/components/platform/locations/DeleteConfirmationModal";
+import { TableSkeleton } from "@/components/platform/TableSkeleton";
 import api from "@/lib/api";
 import { PlusCircle } from "lucide-react";
 
@@ -83,7 +84,7 @@ export default function LocationsPage() {
   // --- Render Logic ---
 
   const renderContent = () => {
-    if (isLoading) return <p className="p-6 text-center text-gray-500">Loading locations...</p>;
+    if (isLoading) return <TableSkeleton />;
     if (error) return <p className="p-6 text-center text-red-500">Failed to load locations.</p>;
     if (locations && locations.length > 0) {
       return <LocationsTable locations={locations} onEdit={handleOpenEditModal} onDelete={handleOpenDeleteModal} />;

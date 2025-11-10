@@ -6,9 +6,10 @@ import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/context/AuthContext";
 import { usePathname } from "next/navigation"; // Hook untuk mendapatkan path saat ini
 
+import { Breadcrumbs } from "./Breadcrumbs"; // <-- 1. Impor
+
 export function Header() {
   const { user, logout } = useAuth();
-  const pathname = usePathname(); // Contoh: "/dashboard" atau "/locations"
 
   // Fungsi sederhana untuk mengubah path menjadi judul yang lebih rapi
   const getPageTitle = (path: string) => {
@@ -21,7 +22,8 @@ export function Header() {
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-white/80 px-6 backdrop-blur-md">
       {/* Kolom Kiri: Judul Halaman Dinamis */}
       <div>
-        <h1 className="text-xl font-semibold font-display text-gray-800">{getPageTitle(pathname)}</h1>
+        {/* 👇 GANTI BLOK INI 👇 */}
+        <Breadcrumbs />
       </div>
 
       {/* Kolom Kanan: Search, Notifikasi, dan Profil Pengguna */}

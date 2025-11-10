@@ -11,6 +11,7 @@ import { PlusCircle } from "lucide-react";
 import { DevicesTable } from "./DevicesTable";
 import { AddDeviceForm } from "./AddDeviceForm";
 import { DeleteConfirmationModal } from "../locations/DeleteConfirmationModal";
+import { TableSkeleton } from "@/components/platform/TableSkeleton";
 import type { Device } from "@/types"; // Gunakan tipe terpusat
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
@@ -79,7 +80,7 @@ export function DevicesCrudSection({ locationId }: { locationId: string }) {
 
   // --- Render Logic ---
   const renderContent = () => {
-    if (isLoading) return <p className="p-6 text-center text-gray-500">Loading devices...</p>;
+    if (isLoading) return <TableSkeleton />;
     if (error) return <p className="p-6 text-center text-red-500">Failed to load devices.</p>;
     if (devices && devices.length > 0) {
       return <DevicesTable devices={devices} onEdit={handleOpenEditModal} onDelete={handleOpenDeleteModal} />;
