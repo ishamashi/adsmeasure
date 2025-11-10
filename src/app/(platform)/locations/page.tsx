@@ -4,6 +4,7 @@
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import useSWR from "swr";
+import { toast } from "sonner";
 import { Location } from "@/types";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
@@ -50,34 +51,33 @@ export default function LocationsPage() {
   };
 
   const handleFormSubmit = async (data: { name: string; address: string }) => {
-    try {
-      if (modalMode === "edit" && selectedLocation) {
-        // Logika Update
-        await api.put(`/locations/${selectedLocation.id}`, data);
-      } else {
-        // Logika Create
-        await api.post("/locations", data);
-      }
-      mutate(); // Re-fetch data untuk memperbarui UI
-      handleCloseModals();
-    } catch (error) {
-      console.error(`Failed to ${modalMode} location:`, error);
-      throw new Error(`Failed to ${modalMode} location.`);
-    }
+    const promise = () => (modalMode === "edit" && selectedLocation ? api.put(`/locations/${selectedLocation.id}`, data) : api.post("/locations", data));
+
+    toast.promise(promise, {
+      loading: "Saving location...",
+      success: (res) => {
+        mutate();
+        handleCloseModals();
+        return `Location "${res.data.name}" saved successfully.`;
+      },
+      error: (err) => err.response?.data?.message || "Failed to save location.",
+    });
   };
 
   const handleDeleteConfirm = async () => {
     if (!selectedLocation) return;
-    setIsDeleting(true);
-    try {
-      await api.delete(`/locations/${selectedLocation.id}`);
-      mutate();
-      handleCloseModals();
-    } catch (error) {
-      console.error("Failed to delete location:", error);
-    } finally {
-      setIsDeleting(false);
-    }
+
+    const promise = () => api.delete(`/locations/${selectedLocation.id}`);
+
+    toast.promise(promise, {
+      loading: `Deleting "${selectedLocation.name}"...`,
+      success: () => {
+        mutate();
+        handleCloseModals();
+        return `Location "${selectedLocation.name}" deleted.`;
+      },
+      error: (err) => err.response?.data?.message || "Failed to delete location.",
+    });
   };
 
   // --- Render Logic ---

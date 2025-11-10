@@ -3,6 +3,7 @@
 import { useState } from "react";
 import useSWR from "swr";
 import api from "@/lib/api";
+import { toast } from "sonner";
 import { PageHeader } from "@/components/platform/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { PlusCircle } from "lucide-react";
@@ -25,7 +26,7 @@ function AddTierForm({ onSubmit, onClose, initialData }: { onSubmit: (data: any)
     e.preventDefault();
     setIsLoading(true);
     try {
-    const featuresArray: string[] = features.split("\n").filter((f: string) => f.trim() !== "");
+      const featuresArray: string[] = features.split("\n").filter((f: string) => f.trim() !== "");
       await onSubmit({ name, description, price_monthly: Number(priceMonthly), price_yearly: Number(priceYearly), features: featuresArray });
     } catch (error) {
       alert("Failed to save tier.");
@@ -112,19 +113,21 @@ export default function TierManagementPage() {
 
   const handleFormSubmit = async (data: any) => {
     setIsProcessing(true);
-    try {
-      if (modalMode === "edit" && selectedTier) {
-        await api.put(`/license-tiers/${selectedTier.id}`, data);
-      } else {
-        await api.post("/license-tiers", data);
-      }
-      mutate();
-      setModalMode(null);
-    } catch (error) {
-      alert("Failed to save tier.");
-    } finally {
-      setIsProcessing(false);
-    }
+    const promise = () => (modalMode === "edit" && selectedTier ? api.put(`/license-tiers/${selectedTier.id}`, data) : api.post("/license-tiers", data));
+
+    toast.promise(promise, {
+      loading: "Saving tier...",
+      success: (res) => {
+        mutate();
+        setModalMode(null);
+        return `Tier "${res.data.name}" saved successfully!`;
+      },
+      error: (err) => {
+        return err.response?.data?.message || "Failed to save tier.";
+      },
+    });
+
+    setIsProcessing(false);
   };
 
   const handleDelete = (tier: any) => {
@@ -135,15 +138,21 @@ export default function TierManagementPage() {
   const handleDeleteConfirm = async () => {
     if (!selectedTier) return;
     setIsProcessing(true);
-    try {
-      await api.delete(`/license-tiers/${selectedTier.id}`);
-      mutate();
-      setIsDeleteModalOpen(false);
-    } catch (error: any) {
-      alert(error.response?.data?.message || "Failed to delete tier.");
-    } finally {
-      setIsProcessing(false);
-    }
+    const promise = () => api.delete(`/license-tiers/${selectedTier.id}`);
+
+    toast.promise(promise, {
+      loading: "Deleting tier...",
+      success: () => {
+        mutate();
+        setIsDeleteModalOpen(false);
+        return `Tier "${selectedTier.name}" deleted successfully.`;
+      },
+      error: (err) => {
+        return err.response?.data?.message || "Failed to delete tier.";
+      },
+    });
+
+    setIsProcessing(false);
   };
 
   const renderContent = () => {

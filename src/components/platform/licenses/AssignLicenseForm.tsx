@@ -2,6 +2,7 @@
 "use client";
 import { useState } from "react";
 import useSWR from "swr";
+import { toast } from "sonner";
 import api from "@/lib/api";
 import { Button } from "@/components/ui/Button";
 
@@ -15,19 +16,22 @@ export function AssignLicenseForm({ deviceId, onSuccess }: { deviceId: number; o
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    try {
-      await api.post("/licenses", {
+
+    const promise = () =>
+      api.post("/licenses", {
         device_id: deviceId,
         license_tier_id: Number(tierId),
         billing_cycle: cycle,
       });
-      onSuccess();
-    } catch (error) {
-      alert("Failed to assign license.");
-    } finally {
-      setIsLoading(false);
-    }
+
+    toast.promise(promise, {
+      loading: "Assigning license...",
+      success: () => {
+        onSuccess(); // Ini akan memanggil `mutateDevice` dari halaman induk
+        return `License assigned successfully!`;
+      },
+      error: (err) => err.response?.data?.message || "Failed to assign license.",
+    });
   };
 
   return (

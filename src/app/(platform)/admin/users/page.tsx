@@ -4,6 +4,7 @@
 import { useState } from "react";
 import useSWR from "swr";
 import api from "@/lib/api";
+import { toast } from "sonner";
 import { PageHeader } from "@/components/platform/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { PlusCircle } from "lucide-react";
@@ -18,19 +19,20 @@ export default function UserManagementPage() {
   const { data: users, error, isLoading, mutate } = useSWR<User[]>("/users", fetcher);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleAddUser = async (data: Record<string, unknown>) => {
-    try {
-      await api.post("/users", data);
-      mutate(); 
-      setIsModalOpen(false);
-    } catch (error: unknown) {
-      console.error("Failed to add user:", error);
-      if (error && typeof error === "object" && "response" in error) {
-        const errObj = error as { response?: { data?: { message?: string } } };
-        throw new Error(errObj.response?.data?.message || "Failed to add user.");
-      }
-      throw new Error("Failed to add user.");
-    }
+  const handleAddUser = async (data: any) => {
+    const promise = () => api.post("/users", data);
+
+    toast.promise(promise, {
+      loading: "Creating new user...",
+      success: (res) => {
+        mutate(); // Refresh data tabel
+        setIsModalOpen(false); // Tutup modal
+        return `User "${res.data.name}" created successfully!`;
+      },
+      error: (err) => {
+        return err.response?.data?.message || "Failed to create user.";
+      },
+    });
   };
 
   const renderContent = () => {

@@ -2,8 +2,9 @@
 "use client";
 
 import { useState } from "react";
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from "@/context/AuthContext";
 import useSWR from "swr";
+import { toast } from "sonner";
 import api from "@/lib/api";
 import { Button } from "@/components/ui/Button";
 import { PlusCircle } from "lucide-react";
@@ -45,37 +46,35 @@ export function DevicesCrudSection({ locationId }: { locationId: string }) {
     setSelectedDevice(null);
   };
 
-  const handleFormSubmit = async (data: Omit<Device, "id">) => {
-    setIsProcessing(true);
-    try {
-      const payload = { ...data, location_id: Number(locationId) };
-      if (modalMode === "edit" && selectedDevice) {
-        await api.put(`/devices/${selectedDevice.id}`, payload);
-      } else {
-        await api.post("/devices", payload);
-      }
-      mutate();
-      handleCloseModals();
-    } catch (err: unknown) {
-      console.error(err);
-      throw new Error("Failed to save device.");
-    } finally {
-      setIsProcessing(false);
-    }
+  const handleFormSubmit = async (data: any) => {
+    const payload = { ...data, location_id: Number(locationId) };
+    const promise = () => (modalMode === "edit" && selectedDevice ? api.put(`/devices/${selectedDevice.id}`, payload) : api.post("/devices", payload));
+
+    toast.promise(promise, {
+      loading: "Saving device...",
+      success: (res) => {
+        mutate();
+        handleCloseModals();
+        return `Device "${res.data.name}" saved successfully.`;
+      },
+      error: (err) => err.response?.data?.message || "Failed to save device.",
+    });
   };
 
   const handleDeleteConfirm = async () => {
     if (!selectedDevice) return;
-    setIsProcessing(true);
-    try {
-      await api.delete(`/devices/${selectedDevice.id}`);
-      mutate();
-      handleCloseModals();
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsProcessing(false);
-    }
+
+    const promise = () => api.delete(`/devices/${selectedDevice.id}`);
+
+    toast.promise(promise, {
+      loading: `Deleting "${selectedDevice.name}"...`,
+      success: () => {
+        mutate();
+        handleCloseModals();
+        return `Device "${selectedDevice.name}" deleted.`;
+      },
+      error: (err) => err.response?.data?.message || "Failed to delete device.",
+    });
   };
 
   // --- Render Logic ---
@@ -93,10 +92,10 @@ export function DevicesCrudSection({ locationId }: { locationId: string }) {
     <div className="space-y-4">
       <div className="text-right">
         {user && user.role < 20 && (
-        <Button onClick={handleOpenAddModal}>
-          <PlusCircle className="mr-2 h-4 w-4" />
-          Add Device
-        </Button>
+          <Button onClick={handleOpenAddModal}>
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Add Device
+          </Button>
         )}
       </div>
       {renderContent()}

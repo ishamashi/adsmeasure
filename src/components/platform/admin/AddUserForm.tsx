@@ -26,18 +26,8 @@ export function AddUserForm({ onSubmit, onClose }: AddUserFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError(null);
-    try {
-      await onSubmit(formData);
-    } catch (err: unknown) {
-      if (err && typeof err === "object" && "message" in err) {
-        setError((err as { message?: string }).message || "Failed to add user.");
-      } else {
-        setError("Failed to add user.");
-      }
-    } finally {
-      setIsLoading(false);
-    }
+    await onSubmit(formData);
+    setIsLoading(false);
   };
 
   return (
