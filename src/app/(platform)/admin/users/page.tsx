@@ -9,9 +9,10 @@ import { PageHeader } from "@/components/platform/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { PlusCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/Card";
-import { UsersTable } from "@/components/platform/admin/UsersTable";
 import { AddUserForm } from "@/components/platform/admin/AddUserForm";
 import { TableSkeleton } from "@/components/platform/TableSkeleton";
+
+import { UsersTable } from "@/components/platform/admin/UsersTable";
 import type { User } from "@/types";
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
@@ -19,6 +20,7 @@ const fetcher = (url: string) => api.get(url).then((res) => res.data);
 export default function UserManagementPage() {
   const { data: users, error, isLoading, mutate } = useSWR<User[]>("/users", fetcher);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false); // Tambahkan state ini
 
   const handleAddUser = async (data: any) => {
     const promise = () => api.post("/users", data);
@@ -36,11 +38,31 @@ export default function UserManagementPage() {
     });
   };
 
+  const handleRegenerateKey = async (userId: string) => {
+    if (!confirm("Are you sure you want to regenerate the API Key? The old key will stop working immediately.")) {
+      return;
+    }
+
+    setIsProcessing(true);
+    const promise = () => api.post(`/users/${userId}/regenerate-key`);
+
+    toast.promise(promise, {
+      loading: "Regenerating API Key...",
+      success: () => {
+        mutate();
+        return `API Key regenerated successfully!`;
+      },
+      error: (err) => err.response?.data?.message || "Failed to regenerate key.",
+    });
+
+    setIsProcessing(false);
+  };
+
   const renderContent = () => {
     if (isLoading) return <TableSkeleton />;
     if (error) return <p className="p-6 text-center text-red-500">Failed to load users.</p>;
     if (users && users.length > 0) {
-      return <UsersTable users={users} />;
+      return <UsersTable users={users} onRegenerateKey={handleRegenerateKey} isProcessing={isProcessing} />;
     }
     return <p className="p-6 text-center text-gray-500">No users found.</p>;
   };

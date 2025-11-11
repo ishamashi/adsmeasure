@@ -4,6 +4,8 @@ export interface User {
   name: string;
   email: string;
   role: number;
+  api_key: string;
+  created_at: string;
 }
 
 export interface Device {
@@ -12,7 +14,7 @@ export interface Device {
   device_uid: string;
   device_type_id: number;
   status: string;
-  location_id: number; // Tambahkan properti lain yang relevan
+  location_id: number; 
   created_at: string;
   updated_at: string;
 }
