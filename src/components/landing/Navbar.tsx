@@ -30,9 +30,11 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="ghost" className="text-slate-300 hover:text-white">
-            Login
-          </Button>
+          <Link href="login">
+            <Button variant="ghost" className="text-slate-300 hover:text-white">
+              Login
+            </Button>
+          </Link>
           <Button className="bg-gradient-brand font-semibold hover:shadow-glow">Get Started</Button>
         </div>
       </div>

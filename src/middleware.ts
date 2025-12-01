@@ -27,5 +27,15 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    /*
+     * Cocokkan semua path request, KECUALI untuk:
+     * - Rute yang dimulai dengan /api
+     * - Aset statis Next.js (_next/static)
+     * - File gambar Next.js (_next/image)
+     * - SEMUA file dengan ekstensi (misalnya .png, .svg, .txt, .webp)
+     * - File aset di folder public (favicon.ico)
+     */
+    "/((?!api|_next/static|_next/image|.*\\..*|favicon.ico).*)",
+  ],
 };

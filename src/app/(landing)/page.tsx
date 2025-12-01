@@ -2,7 +2,7 @@
 import { HeroSection } from "@/components/landing/HeroSection";
 import { SolutionsSection } from "@/components/landing/SolutionsSection";
 import { FeaturesSection } from "@/components/landing/FeaturesSection";
-import { TestimonialsSection } from "@/components/landing/TestimonialsSection"; // <-- 1. Impor
+// import { TestimonialsSection } from "@/components/landing/TestimonialsSection"; // <-- 1. Impor
 import { CtaSection } from "@/components/landing/CtaSection";
 
 import { Metadata } from "next";
@@ -18,7 +18,7 @@ export default function LandingPage() {
       <HeroSection />
       <SolutionsSection />
       <FeaturesSection />
-      <TestimonialsSection />
+      {/* <TestimonialsSection /> */}
       <CtaSection />
     </>
   );
