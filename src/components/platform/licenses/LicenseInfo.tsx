@@ -1,7 +1,13 @@
 // src/components/platform/licenses/LicenseInfo.tsx
 import { Badge } from "@/components/ui/Badge";
 
-export function LicenseInfo({ license }: { license: any }) {
+interface License {
+  license_status: "active" | "inactive";
+  license_tier_name: string;
+  license_expires_at: string;
+}
+
+export function LicenseInfo({ license }: { license: License }) {
   return (
     <div className="space-y-2 text-sm">
       <div className="flex justify-between">

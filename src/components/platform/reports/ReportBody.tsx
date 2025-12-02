@@ -7,31 +7,37 @@ import { DistributionPieChart } from "@/components/platform/devices/Distribution
 import { StatCard } from "@/components/platform/dashboard/StatCard";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList } from "recharts";
 import { Users, Wifi, BarChart2, Clock, Car } from "lucide-react";
+import type { ReportData, ReportSummary, PeakHour, PeakDay } from "@/types";
 
-export function ReportBody({ reportData }: { reportData: any }) {
+export function ReportBody({ reportData }: { reportData: ReportData }) {
   if (!reportData) return null;
 
   const { timeSeries, summary, peakDays, peakHours } = reportData;
 
+  // Defensive: handle summary possibly undefined/null
+  if (!summary) {
+    return <div className="text-center text-gray-500">No summary data available.</div>;
+  }
+
   const genderData = [
-    { name: "Male", value: parseFloat(summary.avgMale) },
-    { name: "Female", value: parseFloat(summary.avgFemale) },
+    { name: "Male", value: parseFloat(String(summary.avgMale ?? 0)) },
+    { name: "Female", value: parseFloat(String(summary.avgFemale ?? 0)) },
   ];
 
   const ageData = [
-    { name: "Child", value: parseFloat(summary.avgChild) },
-    { name: "Teen", value: parseFloat(summary.avgTeen) },
-    { name: "Adult", value: parseFloat(summary.avgAdult) },
-    { name: "Senior", value: parseFloat(summary.avgSenior) },
+    { name: "Child", value: parseFloat(String(summary.avgChild ?? 0)) },
+    { name: "Teen", value: parseFloat(String(summary.avgTeen ?? 0)) },
+    { name: "Adult", value: parseFloat(String(summary.avgAdult ?? 0)) },
+    { name: "Senior", value: parseFloat(String(summary.avgSenior ?? 0)) },
   ];
 
   const dwellingData = [
-    { name: "Dwell A", value: summary.totalDwellA },
-    { name: "Dwell B", value: summary.totalDwellB },
-    { name: "Dwell C", value: summary.totalDwellC },
+    { name: "Dwell A", value: summary.totalDwellA ?? 0 },
+    { name: "Dwell B", value: summary.totalDwellB ?? 0 },
+    { name: "Dwell C", value: summary.totalDwellC ?? 0 },
   ];
 
-  const formattedPeakHours = peakHours.map((h: any) => ({
+  const formattedPeakHours = peakHours.map((h: PeakHour) => ({
     ...h,
     hour_of_day: `${String(h.hour_of_day).padStart(2, "0")}:00`,
   }));
@@ -39,10 +45,10 @@ export function ReportBody({ reportData }: { reportData: any }) {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard isLoading={false} title="Total People" value={summary.totalPeople.toLocaleString()} icon={<Users className="h-5 w-5" />} />
-        <StatCard isLoading={false} title="Total Impressions" value={summary.totalImpressions.toLocaleString()} icon={<Wifi className="h-5 w-5" />} />
-        <StatCard isLoading={false} title="Avg Traffic / Day" value={summary.avgTrafficPerDay.toLocaleString()} icon={<BarChart2 className="h-5 w-5" />} />
-        <StatCard isLoading={false} title="Avg People / Day" value={summary.avgPeoplePerDay.toLocaleString()} icon={<Users className="h-5 w-5" />} />
+        <StatCard isLoading={false} title="Total People" value={(summary.totalPeople ?? 0).toLocaleString()} icon={<Users className="h-5 w-5" />} />
+        <StatCard isLoading={false} title="Total Impressions" value={(summary.totalImpressions ?? 0).toLocaleString()} icon={<Wifi className="h-5 w-5" />} />
+        <StatCard isLoading={false} title="Avg Traffic / Day" value={(summary.avgTrafficPerDay ?? 0).toLocaleString()} icon={<BarChart2 className="h-5 w-5" />} />
+        <StatCard isLoading={false} title="Avg People / Day" value={(summary.avgPeoplePerDay ?? 0).toLocaleString()} icon={<Users className="h-5 w-5" />} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -79,7 +85,7 @@ export function ReportBody({ reportData }: { reportData: any }) {
                 <YAxis fontSize={12} />
                 <Tooltip />
                 <Bar dataKey="total_traffic" fill="#2563eb" name="Total Traffic">
-                  <LabelList dataKey="total_traffic" position="top" fontSize={10} formatter={(value: any) => Number(value).toLocaleString()} />
+                  <LabelList dataKey="total_traffic" position="top" fontSize={10} formatter={(label) => (typeof label === "number" ? label.toLocaleString() : label)} />
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
@@ -95,7 +101,7 @@ export function ReportBody({ reportData }: { reportData: any }) {
                 <YAxis fontSize={12} />
                 <Tooltip />
                 <Bar dataKey="average_traffic" fill="#0ea5e9" name="Average Traffic">
-                  <LabelList dataKey="average_traffic" position="top" fontSize={10} formatter={(value: any) => Number(value).toLocaleString()} />
+                  <LabelList dataKey="average_traffic" position="top" fontSize={10} formatter={(label) => (typeof label === "number" ? label.toLocaleString() : label)} />
                 </Bar>
               </BarChart>
             </ResponsiveContainer>

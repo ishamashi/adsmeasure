@@ -47,7 +47,7 @@ export function DevicesCrudSection({ locationId }: { locationId: string }) {
     setSelectedDevice(null);
   };
 
-  const handleFormSubmit = async (data: any) => {
+  const handleFormSubmit = async (data: Partial<Device>) => {
     const payload = { ...data, location_id: Number(locationId) };
     const promise = () => (modalMode === "edit" && selectedDevice ? api.put(`/devices/${selectedDevice.id}`, payload) : api.post("/devices", payload));
 

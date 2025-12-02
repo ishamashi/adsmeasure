@@ -22,7 +22,7 @@ export default function UserManagementPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false); // Tambahkan state ini
 
-  const handleAddUser = async (data: any) => {
+  const handleAddUser = async (data: Record<string, string>) => {
     const promise = () => api.post("/users", data);
 
     toast.promise(promise, {

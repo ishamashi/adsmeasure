@@ -7,11 +7,12 @@ import { PageHeader } from "@/components/platform/PageHeader";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { differenceInDays, formatDistanceToNow } from "date-fns";
+import { License } from "@/types";
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
 // Komponen Tabel (didefinisikan di file yang sama untuk kesederhanaan)
-function LicensesTable({ licenses }: { licenses: any[] }) {
+function LicensesTable({ licenses }: { licenses: License[] }) {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "active":

@@ -199,7 +199,7 @@ export default function AnalyticsPage() {
           </div>
         ) : (
           <Card>
-            <CardContent className="p-8 text-center text-gray-500">Please select filters and click 'Generate' to view analytics.</CardContent>
+            <CardContent className="p-8 text-center text-gray-500">Please select filters and click &apos;Generate&apos; to view analytics.</CardContent>
           </Card>
         )}
       </div>

@@ -31,10 +31,37 @@ export default function DeviceDetailPage() {
 
   const summary = useMemo(() => {
     if (!stats || stats.length === 0) {
-      return { totalPeople: 0, totalVehicles: 0, totalWifi: 0, avgMale: 0, avgFemale: 0, avgChild: 0, avgTeen: 0, avgAdult: 0, avgSenior: 0, totalDwellA: 0, totalDwellB: 0, totalDwellC: 0 };
+      return {
+        totalPeople: 0,
+        totalVehicles: 0,
+        totalWifi: 0,
+        avgMale: 0,
+        avgFemale: 0,
+        avgChild: 0,
+        avgTeen: 0,
+        avgAdult: 0,
+        avgSenior: 0,
+        totalDwellA: 0,
+        totalDwellB: 0,
+        totalDwellC: 0,
+      };
     }
     const totals = stats.reduce(
-      (acc: any, current: any) => {
+      (
+        acc: {
+          totalPeople: number;
+          totalVehicles: number;
+          totalWifi: number;
+          totalMaleWeight: number;
+          totalChildWeight: number;
+          totalTeenWeight: number;
+          totalAdultWeight: number;
+          totalDwellA: number;
+          totalDwellB: number;
+          totalDwellC: number;
+        },
+        current: Record<string, unknown>
+      ) => {
         const people = Number(current.people_count ?? 0);
         acc.totalPeople += people;
         acc.totalVehicles += Number(current.cars_count ?? 0) + Number(current.motorcycles_count ?? 0) + Number(current.trucks_count ?? 0) + Number(current.buses_count ?? 0);
@@ -48,7 +75,18 @@ export default function DeviceDetailPage() {
         acc.totalDwellC += Number(current.wifi_dwell_c_count ?? 0);
         return acc;
       },
-      { totalPeople: 0, totalVehicles: 0, totalWifi: 0, totalMaleWeight: 0, totalChildWeight: 0, totalTeenWeight: 0, totalAdultWeight: 0, totalDwellA: 0, totalDwellB: 0, totalDwellC: 0 }
+      {
+        totalPeople: 0,
+        totalVehicles: 0,
+        totalWifi: 0,
+        totalMaleWeight: 0,
+        totalChildWeight: 0,
+        totalTeenWeight: 0,
+        totalAdultWeight: 0,
+        totalDwellA: 0,
+        totalDwellB: 0,
+        totalDwellC: 0,
+      }
     );
     const avgMale = totals.totalPeople > 0 ? totals.totalMaleWeight / totals.totalPeople : 0;
     const avgChild = totals.totalPeople > 0 ? totals.totalChildWeight / totals.totalPeople : 0;

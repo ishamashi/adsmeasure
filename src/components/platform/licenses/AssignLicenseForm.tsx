@@ -8,8 +8,14 @@ import { Button } from "@/components/ui/Button";
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
+interface LicenseTier {
+  id: number;
+  name: string;
+  price_monthly: number;
+}
+
 export function AssignLicenseForm({ deviceId, onSuccess }: { deviceId: number; onSuccess: () => void }) {
-  const { data: tiers } = useSWR("/license-tiers", fetcher); // Endpoint ini perlu dibuat
+  const { data: tiers } = useSWR<LicenseTier[]>("/license-tiers", fetcher); // Endpoint ini perlu dibuat
   const [tierId, setTierId] = useState("");
   const [cycle, setCycle] = useState("monthly");
   const [isLoading, setIsLoading] = useState(false);
@@ -42,7 +48,7 @@ export function AssignLicenseForm({ deviceId, onSuccess }: { deviceId: number; o
           <option disabled value="">
             Select Tier
           </option>
-          {tiers?.map((t: any) => (
+          {tiers?.map((t: LicenseTier) => (
             <option key={t.id} value={t.id}>
               {t.name} - ${t.price_monthly}/mo
             </option>
