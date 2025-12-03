@@ -79,3 +79,43 @@ export interface ReportData {
   peakDays: PeakDay[];
   peakHours: PeakHour[];
 }
+
+export interface ReportDataAnalytics {
+  data: {
+    timeSeries: Array<{
+      day: string;
+      people_count: number;
+      vehicles_count?: number;
+      [key: string]: unknown;
+    }>;
+    peakDays: Array<{
+      day_of_week_iso: string;
+      day_name: string;
+      total_traffic: number;
+      [key: string]: unknown;
+    }>;
+    peakHours: Array<{
+      hour_of_day: string | number;
+      average_traffic: number;
+      [key: string]: unknown;
+    }>;
+    summary: Array<{
+      avgMale: string | number;
+      avgFemale: string | number;
+      avgChild: string | number;
+      avgTeen: string | number;
+      avgAdult: string | number;
+      avgSenior: string | number;
+      totalDwellA: number;
+      totalDwellB: number;
+      totalDwellC: number;
+      totalPeople: number;
+      totalImpressions: number;
+      avgTrafficPerDay: number;
+      avgPeoplePerDay: number;
+      totalVehicles: number;
+      [key: string]: unknown;
+    }>;
+  };
+  reportType: "single" | "compare";
+}

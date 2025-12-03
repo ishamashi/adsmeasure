@@ -14,6 +14,7 @@ import { Calendar as CalendarIcon, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { ComposedChart, Line, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { ReportBody } from "@/components/platform/reports/ReportBody";
+import { ReportDataAnalytics, ReportData } from "@/types";
 
 interface Location {
   id: number;
@@ -27,7 +28,7 @@ export default function AnalyticsPage() {
   const [mode, setMode] = useState<"single" | "compare">("single");
   const [selectedLocationIds, setSelectedLocationIds] = useState<number[]>([]);
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
-  const [reportData, setReportData] = useState<any | null>(null);
+  const [ReportDataAnalytics, setReportData] = useState<ReportDataAnalytics | null>(null);
   const [isLoadingReport, setIsLoadingReport] = useState(false);
 
   const handleLocationSelect = (locationId: number) => {
@@ -58,16 +59,20 @@ export default function AnalyticsPage() {
       const res = await api.post("/analytics/report", payload);
       setReportData(res.data);
       toast.success("Report generated successfully!");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error generating report:", error);
-      toast.error(error.response?.data?.message || "Failed to generate report.");
+      if (typeof error === "object" && error !== null && "response" in error && typeof (error as any).response === "object" && (error as any).response !== null && "data" in (error as any).response && typeof (error as any).response.data === "object" && (error as any).response.data !== null && "message" in (error as any).response.data) {
+        toast.error((error as any).response.data.message);
+      } else {
+        toast.error("Failed to generate report.");
+      }
     } finally {
       setIsLoadingReport(false);
     }
   };
 
   const comparisonLines = useMemo(() => {
-    if (!reportData || reportData.reportType !== "compare" || !allLocations) return [];
+    if (!ReportDataAnalytics || ReportDataAnalytics.reportType !== "compare" || !allLocations) return [];
     const colors = ["#3b82f6", "#ef4444", "#10b981", "#f59e0b", "#8b5cf6"];
     return allLocations
       .filter((loc) => selectedLocationIds.includes(loc.id))
@@ -75,7 +80,7 @@ export default function AnalyticsPage() {
         { dataKey: `${loc.name}_people`, name: `${loc.name} (People)`, color: colors[index % colors.length], type: "line" as const, yAxisId: "right" },
         { dataKey: `${loc.name}_vehicles`, name: `${loc.name} (Vehicles)`, color: colors[index % colors.length], type: "bar" as const, yAxisId: "left" },
       ]);
-  }, [reportData, allLocations, selectedLocationIds]);
+  }, [ReportDataAnalytics, allLocations, selectedLocationIds]);
 
   return (
     <>
@@ -149,17 +154,17 @@ export default function AnalyticsPage() {
               <Loader2 className="h-6 w-6 animate-spin mx-auto" />
             </CardContent>
           </Card>
-        ) : reportData && reportData.data ? (
+        ) : ReportDataAnalytics && ReportDataAnalytics.data ? (
           <div>
-            {reportData.reportType === "single" ? (
-              <ReportBody reportData={reportData.data} />
+            {ReportDataAnalytics.reportType === "single" ? (
+              <ReportBody reportData={ReportDataAnalytics.data as unknown as ReportData} />
             ) : (
               <div className="space-y-4">
                 <Card>
                   <CardContent className="p-4">
                     <h3 className="text-lg font-semibold mb-4">Daily Trend Comparison</h3>
                     <ResponsiveContainer width="100%" height={400}>
-                      <ComposedChart data={reportData.data.timeSeries}>
+                      <ComposedChart data={ReportDataAnalytics.data.timeSeries}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="day" tickFormatter={(label) => format(new Date(label), "dd MMM")} fontSize={12} />
                         <YAxis yAxisId="left" fontSize={12} />
@@ -183,7 +188,7 @@ export default function AnalyticsPage() {
                         </tr>
                       </thead>
                       <tbody className="bg-white divide-y divide-gray-200">
-                        {reportData.data.summary.map((row: any, index: number) => (
+                        {ReportDataAnalytics.data.summary.map((row: any, index: number) => (
                           <tr key={index}>
                             <td className="px-6 py-4">{row.locationName}</td>
                             <td className="px-6 py-4 text-right">{row.totalPeople.toLocaleString()}</td>

@@ -1,13 +1,13 @@
 "use client";
 
-import { useMemo } from "react";
+// import { useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/Card";
 import { StatsChart } from "@/components/platform/devices/StatsChart";
 import { DistributionPieChart } from "@/components/platform/devices/DistributionPieChart";
 import { StatCard } from "@/components/platform/dashboard/StatCard";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList } from "recharts";
-import { Users, Wifi, BarChart2, Clock, Car } from "lucide-react";
-import type { ReportData, ReportSummary, PeakHour, PeakDay } from "@/types";
+import { Users, Wifi, BarChart2 } from "lucide-react";
+import type { ReportData, PeakHour } from "@/types";
 
 export function ReportBody({ reportData }: { reportData: ReportData }) {
   if (!reportData) return null;
