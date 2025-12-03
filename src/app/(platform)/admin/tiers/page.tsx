@@ -36,7 +36,7 @@ function AddTierForm({ onSubmit, onClose, initialData }: { onSubmit: (data: Tier
         price_yearly: Number(priceYearly),
         features: featuresArray,
       });
-    } catch (error) {
+    } catch {
       alert("Failed to save tier.");
     } finally {
       setIsLoading(false);

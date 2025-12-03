@@ -3,9 +3,7 @@
 import { ReportBody } from "@/components/platform/reports/ReportBody";
 import type { ReportData } from "@/types";
 
-interface StatsData extends ReportData {}
-
-export function LocationStatsSection({ statsData }: { statsData: StatsData }) {
+export function LocationStatsSection({ statsData }: { statsData: ReportData }) {
   if (!statsData || !statsData.timeSeries || statsData.timeSeries.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500">

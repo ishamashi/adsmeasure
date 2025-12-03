@@ -61,8 +61,19 @@ export default function AnalyticsPage() {
       toast.success("Report generated successfully!");
     } catch (error: unknown) {
       console.error("Error generating report:", error);
-      if (typeof error === "object" && error !== null && "response" in error && typeof (error as any).response === "object" && (error as any).response !== null && "data" in (error as any).response && typeof (error as any).response.data === "object" && (error as any).response.data !== null && "message" in (error as any).response.data) {
-        toast.error((error as any).response.data.message);
+
+      interface ErrorResponse {
+        response?: {
+          data?: {
+            message?: string;
+          };
+        };
+      }
+
+      const err = error as ErrorResponse;
+
+      if (typeof error === "object" && error !== null && "response" in error && typeof err.response === "object" && err.response !== null && "data" in err.response && typeof err.response.data === "object" && err.response.data !== null && "message" in err.response.data) {
+        toast.error(err.response.data?.message ?? "Failed to generate report.");
       } else {
         toast.error("Failed to generate report.");
       }
@@ -94,7 +105,7 @@ export default function AnalyticsPage() {
               <select
                 value={mode}
                 onChange={(e) => {
-                  setMode(e.target.value as any);
+                  setMode(e.target.value as string === "single" ? "single" : "compare");
                   setSelectedLocationIds([]);
                 }}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm h-10"
