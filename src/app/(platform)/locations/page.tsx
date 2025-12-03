@@ -26,7 +26,7 @@ export default function LocationsPage() {
   const [modalMode, setModalMode] = useState<"add" | "edit" | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [isDeleting] = useState(false);
 
   // --- Handlers untuk Aksi CRUD ---
 

@@ -23,7 +23,7 @@ export function DevicesCrudSection({ locationId }: { locationId: string }) {
   const [modalMode, setModalMode] = useState<"add" | "edit" | null>(null);
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [isProcessing] = useState(false);
 
   // --- Handlers untuk Aksi CRUD ---
   const handleOpenAddModal = () => {

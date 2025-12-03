@@ -105,7 +105,7 @@ export default function AnalyticsPage() {
               <select
                 value={mode}
                 onChange={(e) => {
-                  setMode(e.target.value as string === "single" ? "single" : "compare");
+                  setMode((e.target.value as string) === "single" ? "single" : "compare");
                   setSelectedLocationIds([]);
                 }}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm h-10"
@@ -199,7 +199,20 @@ export default function AnalyticsPage() {
                         </tr>
                       </thead>
                       <tbody className="bg-white divide-y divide-gray-200">
-                        {ReportDataAnalytics.data.summary.map((row: any, index: number) => (
+                        {(Array.isArray(ReportDataAnalytics.data.summary)
+                          ? (ReportDataAnalytics.data.summary as Array<Record<string, unknown>>).map((r) => {
+                              const nameCandidate = r["locationName"] ?? r["location"] ?? r["name"];
+                              const totalPeopleCandidate = r["totalPeople"];
+                              const totalVehiclesCandidate = r["totalVehicles"];
+
+                              const locationName = typeof nameCandidate === "string" ? nameCandidate : "Unknown";
+                              const totalPeople = typeof totalPeopleCandidate === "number" ? totalPeopleCandidate : Number(totalPeopleCandidate ?? 0);
+                              const totalVehicles = typeof totalVehiclesCandidate === "number" ? totalVehiclesCandidate : Number(totalVehiclesCandidate ?? 0);
+
+                              return { locationName, totalPeople, totalVehicles };
+                            })
+                          : []
+                        ).map((row, index) => (
                           <tr key={index}>
                             <td className="px-6 py-4">{row.locationName}</td>
                             <td className="px-6 py-4 text-right">{row.totalPeople.toLocaleString()}</td>

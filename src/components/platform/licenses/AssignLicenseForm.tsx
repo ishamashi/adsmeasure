@@ -18,7 +18,7 @@ export function AssignLicenseForm({ deviceId, onSuccess }: { deviceId: number; o
   const { data: tiers } = useSWR<LicenseTier[]>("/license-tiers", fetcher); // Endpoint ini perlu dibuat
   const [tierId, setTierId] = useState("");
   const [cycle, setCycle] = useState("monthly");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

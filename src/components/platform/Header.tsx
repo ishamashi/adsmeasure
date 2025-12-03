@@ -4,7 +4,7 @@
 // import { Search, Bell } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/context/AuthContext";
-import { usePathname } from "next/navigation"; // Hook untuk mendapatkan path saat ini
+// import { usePathname } from "next/navigation"; // Hook untuk mendapatkan path saat ini
 
 import { Breadcrumbs } from "./Breadcrumbs"; // <-- 1. Impor
 
@@ -12,11 +12,11 @@ export function Header() {
   const { user, logout } = useAuth();
 
   // Fungsi sederhana untuk mengubah path menjadi judul yang lebih rapi
-  const getPageTitle = (path: string) => {
-    if (path === "/dashboard") return "Dashboard";
-    const title = path.replace("/", "").charAt(0).toUpperCase() + path.slice(2);
-    return title;
-  };
+  // const getPageTitle = (path: string) => {
+  //   if (path === "/dashboard") return "Dashboard";
+  //   const title = path.replace("/", "").charAt(0).toUpperCase() + path.slice(2);
+  //   return title;
+  // };
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-white/80 px-6 backdrop-blur-md">
